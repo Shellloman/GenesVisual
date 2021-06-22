@@ -1,0 +1,2 @@
+sudo apt-get install libhdf5-serial-dev hdf5-tools
+sudo apt install mesa-common-dev libglu1-mesa-dev
