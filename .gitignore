@@ -33,3 +33,4 @@
 
 # Cmake
 *.user
+Debug/*
