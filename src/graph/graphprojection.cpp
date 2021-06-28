@@ -43,8 +43,8 @@ void GraphProjection::setSavePath(QString _path){
 
 void GraphProjection::createProjection(){
 
-    if(strgroup == None or strdim0 == None or strdim1 == None){
-        qDebug()<< "combo box not setup";
+    if(!dataset->isLoaded()){
+        qDebug()<< "a loaded dataset is requiered";
         return;
     }
 
@@ -52,13 +52,6 @@ void GraphProjection::createProjection(){
         rangeProjection();
     else if(dataset->obs.metadata[strgroup].type == Datatype::Factor)
         factorProjection();
-    else
-        return;
-
-    if(isRange){
-
-    }
-
 
 }
 
@@ -96,24 +89,25 @@ void GraphProjection::factorProjection(){
 
 
     for (int i=0; i<fdim0.length();i++){
-        *series[dataset->obs.dataF[strgroup][i]] << QPointF(fdim0[i],fdim1[i]);
+        *series[dataset->obs.dataF[strgroup][i]] << QPointF(fdim1[i],fdim0[i]);
     }
 
     for(auto serie : qAsConst(series))
         newchart->addSeries(serie);
+
     newchart->setTitle(strgroup+" plot on : "+strdim0+" / "+strdim1);
     newchart->createDefaultAxes();
 
-    float minDim0 = static_cast<QValueAxis*>(newchart->axes()[0])->min();
-    float maxDim0 = static_cast<QValueAxis*>(newchart->axes()[0])->max();
-    float minDim1 = static_cast<QValueAxis*>(newchart->axes()[1])->min();
-    float maxDim1 = static_cast<QValueAxis*>(newchart->axes()[1])->max();
+    float minDim0 = dataset->obsm.metadata[strdim0].minRange;
+    float maxDim0 = dataset->obsm.metadata[strdim0].maxRange;
+    float minDim1 = dataset->obsm.metadata[strdim1].minRange;
+    float maxDim1 = dataset->obsm.metadata[strdim1].maxRange;
 
     float range0 = (maxDim0 - minDim0) *0.05;
     float range1 = (maxDim1 - minDim1) *0.05;
 
-    newchart->axes()[0]->setRange(minDim0-range0, maxDim0+range0);
-    newchart->axes()[1]->setRange(minDim1-range0, maxDim1+range1);
+    newchart->axes()[0]->setRange(minDim1-range1, maxDim1+range1);
+    newchart->axes()[1]->setRange(minDim0-range0, maxDim0+range0);
 
     newchart->setDropShadowEnabled(false);
     newchart->legend()->setAlignment(Qt::AlignRight);
@@ -122,7 +116,11 @@ void GraphProjection::factorProjection(){
     setChart(newchart);
     delete oldchart;
 
-    rangeLegend.hide();
+    rangePix.hide();
+    for (auto &label : rangeLegend){
+        delete label;
+    }
+    rangeLegend.clear();
 }
 
 void GraphProjection::rangeProjection(){
@@ -133,6 +131,9 @@ void GraphProjection::rangeProjection(){
     float max = dataset->obs.metadata[strgroup].maxRange;
     float min = dataset->obs.metadata[strgroup].minRange;
     float range = max-min;
+
+    rangeMin = min;
+    rangeMax = max;
 
     if (range == 0){
         qDebug()<<"unplotable graph, data have a range of zero";
@@ -167,7 +168,7 @@ void GraphProjection::rangeProjection(){
     int index = 0;
     for (int i=0; i<fdim0.length();i++){
         index = std::round(((dataset->obs.dataF[strgroup][i]-min)/range)*19.f);
-        *series[index] << QPointF(fdim0[i], fdim1[i]);
+        *series[index] << QPointF(fdim1[i], fdim0[i]);
     }
 
     for( int k = 19; k>0;k--){
@@ -178,21 +179,24 @@ void GraphProjection::rangeProjection(){
     newchart->setTitle(strgroup+" plot on : "+strdim0+" / "+strdim1);
     newchart->createDefaultAxes();
 
-    float minDim0 = static_cast<QValueAxis*>(newchart->axes()[0])->min();
-    float maxDim0 = static_cast<QValueAxis*>(newchart->axes()[0])->max();
-    float minDim1 = static_cast<QValueAxis*>(newchart->axes()[1])->min();
-    float maxDim1 = static_cast<QValueAxis*>(newchart->axes()[1])->max();
+    float minDim0 = dataset->obsm.metadata[strdim0].minRange;
+    float maxDim0 = dataset->obsm.metadata[strdim0].maxRange;
+    float minDim1 = dataset->obsm.metadata[strdim1].minRange;
+    float maxDim1 = dataset->obsm.metadata[strdim1].maxRange;
 
     float range0 = (maxDim0 - minDim0) *0.05;
     float range1 = (maxDim1 - minDim1) *0.05;
-    newchart->axes()[0]->setRange(minDim0-range0, maxDim0+range0);
-    newchart->axes()[1]->setRange(minDim1-range0, maxDim1+range1);
+
+    newchart->axes()[0]->setRange(minDim1-range1, maxDim1+range1);
+    newchart->axes()[1]->setRange(minDim0-range0, maxDim0+range0);
 
     newchart->setDropShadowEnabled(false);
-    newchart->legend()->setAlignment(Qt::AlignRight);
+    newchart->legend()->hide();
+    newchart->setMargins(QMargins(0,0,100,0));
 
     QChart* oldchart = this->chart();
     setChart(newchart);
+
     delete oldchart;
 
     drawRange();
@@ -202,24 +206,39 @@ void GraphProjection::rangeProjection(){
 void GraphProjection::drawRange(){
     if(!isRange) return;
 
+    float range = rangeMax-rangeMin;
     QRectF tmp = chart()->plotArea();
 
-    QPixmap grad(30,500);
+    QPixmap grad(40,tmp.height());
     QPainter painter(&grad);
     QColor haut, bas;
     haut.setHsl(hue,255,20*2.55f);
     bas.setHsl(hue,255,250);
-    QLinearGradient m_gradient(0,0,30,500);
+    QLinearGradient m_gradient(0,0,40,tmp.height());
     m_gradient.setColorAt(0.0, haut);
     m_gradient.setColorAt(1.0, bas);
     m_gradient.setColorAt(0.0, haut);
     m_gradient.setColorAt(1.0, bas);
 
-    painter.fillRect(QRect(0, 0, 30, 500), m_gradient);
-    rangeLegend.setParent(this);
-    rangeLegend.setGeometry(tmp.x()+tmp.width()+8, (height()-500)/2.f,30,500);
-    rangeLegend.setPixmap(grad);
-    rangeLegend.show();
+
+    painter.fillRect(QRect(0, 0, 40, tmp.height()), m_gradient);
+    painter.setPen(Qt::gray);
+    for (auto &label : rangeLegend){
+        delete label;
+    }
+    rangeLegend.clear();
+
+    for (int i=0;i<11;i++){
+       rangeLegend.append(new QLabel(QString::number(rangeMin+range*(10-i)/10.f), this));
+       rangeLegend[i]->move(tmp.x()+tmp.width()+60, tmp.y() -10 + tmp.height()*(float(i)/10.f) );
+       rangeLegend[i]->show();
+       painter.drawLine(0,tmp.height()*(float(i)/10.f),40,tmp.height()*(float(i)/10.f));
+    }
+
+    rangePix.setParent(this);
+    rangePix.setGeometry(tmp.x()+tmp.width()+10, tmp.y(), 40, tmp.height());
+    rangePix.setPixmap(grad);
+    rangePix.show();
 }
 
 void GraphProjection::resizeEvent(QResizeEvent *event){

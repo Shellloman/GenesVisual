@@ -34,6 +34,10 @@ set(PROJECT_SOURCES
         src/utils/colorpalette.cpp
         src/graph/graphprojection.hpp
         src/graph/graphprojection.cpp
+        src/graph/graphspatial.hpp
+        src/graph/graphspatial.cpp
+        src/container/spatialcontainer.hpp
+        src/container/spatialcontainer.cpp
 
 )
 

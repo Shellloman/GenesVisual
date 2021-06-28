@@ -13,5 +13,4 @@ void DatasetContainer::clear(){
     metadata.clear();
     names.clear();
 
-    path = "";
 }

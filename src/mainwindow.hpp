@@ -17,6 +17,7 @@
 #include <QOpenGLWidget>
 #include "container/h5container.hpp"
 #include "utils/colorpalette.hpp"
+#include "graph/graphspatial.hpp"
 
 using namespace QtCharts;
 
@@ -33,13 +34,14 @@ public:
     ~MainWindow();
 
     void savePlot(QChartView *chartView, QString path);
+    void clearSettings();
 
 public slots:
     void openDialogFile();
     void openDialogDirectory();
-    void saveProjectionPlot();
     void setRangeColor(int hue);
     void setTextPointSize(int size);
+    void setSampleSelection(QString column);
 
 signals:
     void newFilePath(QString filename);
@@ -47,6 +49,7 @@ signals:
 
 private:
     Ui::MainWindow *ui;
+    GraphSpatial *waitingspatial;
     H5container dataset;
     ColorPalette palettes;
     QColor range_color;

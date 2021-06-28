@@ -34,3 +34,5 @@
 # Cmake
 *.user
 Debug/*
+Release/*
+

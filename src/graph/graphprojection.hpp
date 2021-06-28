@@ -10,11 +10,9 @@
 #include <cmath>
 
 #include <QtCharts/QChart>
-#include <QtCharts/QChartView>
+#include "QtCharts/QChartView"
 #include <QtCharts/QScatterSeries>
-
-#include <QPainter>
-#include <QPaintEvent>
+#include <QGraphicsLayout>
 #include <QLinearGradient>
 #include <QRect>
 #include <QLabel>
@@ -56,8 +54,10 @@ private:
     bool isRange;
 
     int hue;
+    float rangeMin, rangeMax;
     float pointSize;
-    QLabel rangeLegend;
+    QVector<QLabel*> rangeLegend;
+    QLabel rangePix;
 
 
 };

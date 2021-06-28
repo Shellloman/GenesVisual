@@ -7,6 +7,7 @@
 #include <memory>
 #include <hdf5/serial/H5Cpp.h>
 #include "datasetcontainer.hpp"
+#include "spatialcontainer.hpp"
 
 class H5container : public QObject
 {
@@ -18,18 +19,21 @@ public:
 
     void load_h5(QString filename);
     void load_dataset(DatasetContainer &coldata, H5::H5File &file);
+    void load_spatial(H5::H5File &file);
 
     bool haveCategories(const H5::H5File &file, QString path, QString name);
+    bool isLoaded();
     void clear();
 
 
     DatasetContainer obs;
     DatasetContainer obsm;
     DatasetContainer var;
-    DatasetContainer uns;
+    SpatialContainer spatial;
 
 private:
     static herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *linfo, void *opdata);
+    static herr_t spatial_library(hid_t loc_id, const char *name, const H5L_info_t *linfo, void *opdata);
     bool isloaded;
 };
 
