@@ -41,8 +41,7 @@ public:
 public slots:
 
     void load_image();
-    void setDim0(QString dim);
-    void setDim1(QString dim);
+    void setEmbedding(QString dim);
     void setSample(QString sample);
     void setGroup(QString _group);
     void setColumn (QString column);
@@ -66,7 +65,7 @@ private:
     QLabel lImage, lChart;
     QPixmap *pimage, *pScaledImage;
 
-    QString strdim0, strdim1, strgroup, strsample, strcolumn;
+    QString strembed, strgroup, strsample, strcolumn;
     int alphaImage, alphaPlot;
 
     bool pixmapIsSet;

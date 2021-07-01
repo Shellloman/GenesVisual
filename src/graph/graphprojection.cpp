@@ -6,8 +6,6 @@ GraphProjection::GraphProjection(QWidget *parent) :
 
     hue = 233;
     pointSize = 5;
-    strdim1 = None;
-    strdim0 = None;
     strgroup = None;
     isRange = false;
 
@@ -25,12 +23,8 @@ void GraphProjection::setPointSize(int _size){
     pointSize = float(_size)/10.f;
 }
 
-void GraphProjection::setDim0(QString _dim){
-    strdim0 = _dim;
-}
-
-void GraphProjection::setDim1(QString _dim){
-    strdim1 = _dim;
+void GraphProjection::setEmbedding(QString _dim){
+    strembed = _dim;
 }
 
 void GraphProjection::setGroup(QString _group){
@@ -71,8 +65,8 @@ void GraphProjection::factorProjection(){
         series[i]->setColor(palette->getColorAt(i));
     }
 
-    QVector<float> fdim0 = dataset->obsm.dataF[strdim0];
-    QVector<float> fdim1 = dataset->obsm.dataF[strdim1];
+    QVector<float> fdim0 = dataset->obsm.getDimensions(strembed, 0);
+    QVector<float> fdim1 = dataset->obsm.getDimensions(strembed, 1);
 
     if(fdim0.length() != fdim1.length()){
         qDebug()<<"dims not have the same length";
@@ -95,13 +89,13 @@ void GraphProjection::factorProjection(){
     for(auto serie : qAsConst(series))
         newchart->addSeries(serie);
 
-    newchart->setTitle(strgroup+" plot on : "+strdim0+" / "+strdim1);
+    newchart->setTitle(strgroup+" plot on : "+strembed);
     newchart->createDefaultAxes();
 
-    float minDim0 = dataset->obsm.metadata[strdim0].minRange;
-    float maxDim0 = dataset->obsm.metadata[strdim0].maxRange;
-    float minDim1 = dataset->obsm.metadata[strdim1].minRange;
-    float maxDim1 = dataset->obsm.metadata[strdim1].maxRange;
+    float minDim0 = dataset->obsm.getMinRange(strembed, 0);
+    float maxDim0 = dataset->obsm.getMaxRange(strembed, 0);
+    float minDim1 = dataset->obsm.getMinRange(strembed, 1);
+    float maxDim1 = dataset->obsm.getMaxRange(strembed, 1);
 
     float range0 = (maxDim0 - minDim0) *0.05;
     float range1 = (maxDim1 - minDim1) *0.05;
@@ -152,8 +146,8 @@ void GraphProjection::rangeProjection(){
     }
 
 
-    QVector<float> fdim0 = dataset->obsm.dataF[strdim0];
-    QVector<float> fdim1 = dataset->obsm.dataF[strdim1];
+    QVector<float> fdim0 = dataset->obsm.getDimensions(strembed, 0);
+    QVector<float> fdim1 = dataset->obsm.getDimensions(strembed, 1);
 
     if(fdim0.length() != fdim1.length()){
         qDebug()<<"dims not have the same length";
@@ -166,9 +160,14 @@ void GraphProjection::rangeProjection(){
         return;
     }
     int index = 0;
+    QVector<float> &group (dataset->obs.dataF[strgroup]);
+
     for (int i=0; i<fdim0.length();i++){
-        index = std::round(((dataset->obs.dataF[strgroup][i]-min)/range)*19.f);
-        *series[index] << QPointF(fdim1[i], fdim0[i]);
+        float value = group[i];
+        if (not std::isnan(value)){
+            index = std::round(((value-min)/range)*19.f);
+            *series[index] << QPointF(fdim1[i], fdim0[i]);
+        }
     }
 
     for( int k = 19; k>0;k--){
@@ -176,13 +175,13 @@ void GraphProjection::rangeProjection(){
     }
 //    for(auto serie : qAsConst(series))
 //        chart->addSeries(serie);
-    newchart->setTitle(strgroup+" plot on : "+strdim0+" / "+strdim1);
+    newchart->setTitle(strgroup+" plot on : "+strembed);
     newchart->createDefaultAxes();
 
-    float minDim0 = dataset->obsm.metadata[strdim0].minRange;
-    float maxDim0 = dataset->obsm.metadata[strdim0].maxRange;
-    float minDim1 = dataset->obsm.metadata[strdim1].minRange;
-    float maxDim1 = dataset->obsm.metadata[strdim1].maxRange;
+    float minDim0 = dataset->obsm.getMinRange(strembed, 0);
+    float maxDim0 = dataset->obsm.getMaxRange(strembed, 0);
+    float minDim1 = dataset->obsm.getMinRange(strembed, 1);
+    float maxDim1 = dataset->obsm.getMaxRange(strembed, 1);
 
     float range0 = (maxDim0 - minDim0) *0.05;
     float range1 = (maxDim1 - minDim1) *0.05;

@@ -33,8 +33,7 @@ public slots:
     void createProjection();
     void setHue(int hue);
     void setPointSize(int size);
-    void setDim0(QString dim);
-    void setDim1(QString dim);
+    void setEmbedding(QString dim);
     void setGroup(QString _group);
     void setSavePath(QString path);
     void drawRange();
@@ -47,7 +46,7 @@ private:
     void rangeProjection();
     void factorProjection();
 
-    QString paletteName, strdim0, strdim1, strgroup, savePath;
+    QString paletteName, strembed, strgroup, savePath;
 
     H5container *dataset;
     ColorPalette *palette;

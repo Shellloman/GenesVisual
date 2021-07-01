@@ -27,10 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
                      ui->spatial, &GraphSpatial::setGroup);
     QObject::connect(ui->Sample_cb, &QComboBox::currentTextChanged,
                      ui->spatial, &GraphSpatial::setSample);
-    QObject::connect(ui->spatial_dim0 , &QComboBox::currentTextChanged,
-                     ui->spatial, &GraphSpatial::setDim0);
-    QObject::connect(ui->spatial_dim1, &QComboBox::currentTextChanged,
-                     ui->spatial, &GraphSpatial::setDim1);
+    QObject::connect(ui->spatial_embed , &QComboBox::currentTextChanged,
+                     ui->spatial, &GraphSpatial::setEmbedding);
     QObject::connect(ui->s_column_cb, &QComboBox::currentTextChanged,
                      this, &MainWindow::setSampleSelection);
 
@@ -39,13 +37,28 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->alphaplt, &QSlider::valueChanged,
                      ui->spatial, &GraphSpatial::setAlphaPlot);
 
+    QObject::connect(ui->d_groups, &QComboBox::currentTextChanged,
+                     ui->density, &GraphDensity::setGroup);
+    QObject::connect(ui->d_range, &QComboBox::currentTextChanged,
+                     ui->density, &GraphDensity::setRange);
+    QObject::connect(ui->d_show, &QPushButton::clicked,
+                     ui->density, &GraphDensity::createGraph);
+    QObject::connect(ui->d_slider, &QSlider::valueChanged,
+                     ui->density, &GraphDensity::setSmoothIt);
+    QObject::connect(ui->d_draw, &QCheckBox::clicked,
+                     ui->density, &GraphDensity::setDrawArea);
+    QObject::connect(ui->d_norm, &QCheckBox::clicked,
+                     ui->density, &GraphDensity::setNormalize);
+
     ui->graphicsView->init(&dataset, &palettes);
     ui->spatial->init(&dataset, &palettes, ui->spatial_chart);
+    ui->density->init(&dataset, &palettes, ui->d_chart);
 
     QRandomGenerator gen;
     QScatterSeries *serie = new QScatterSeries();
-    serie->setMarkerShape(QScatterSeries::MarkerShapeCircle);
-    serie->setMarkerSize(4.5);
+    serie->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    serie->setBorderColor(Qt::transparent);
+    serie->setMarkerSize(5);
 
     for (int i = 0; i < 2000; i++){
         *serie << QPointF(gen.generate(),gen.generate());
@@ -61,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setChart(chart);
 
     waitingspatial = ui->spatial;
-    ui->tabWidget->removeTab(2);
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(waitingspatial));
 
 }
 
@@ -89,14 +102,19 @@ void MainWindow::openDialogFile(){
         if(dataset.obs.metadata[k.key()].type != Datatype::None){
             ui->groups->addItem(k.key());
         }
+
+        if(dataset.obs.metadata[k.key()].type == Datatype::Range){
+            ui->d_range->addItem(k.key());
+        }else if(dataset.obs.metadata[k.key()].type == Datatype::Factor){
+            ui->d_groups->addItem(k.key());
+        }
+
         k++;
     }
-    auto l = dataset.obsm.dataF.constBegin();
-    while (l != dataset.obsm.dataF.constEnd()){
-        if(!l.key().startsWith("spatial", Qt::CaseInsensitive)){
-
-            ui->dim0->addItem(l.key());
-            ui->dim1->addItem(l.key());
+    auto l = dataset.obsm.embedding.constBegin();
+    while (l != dataset.obsm.embedding.constEnd()){
+        if(!l.key().startsWith("spatial", Qt::CaseInsensitive) and l.value().ndims <3 ){
+            ui->embeddings->addItem(l.key());
         }
         l++;
     }
@@ -123,13 +141,11 @@ void MainWindow::openDialogFile(){
             }
             k++;
         }
-        auto l = dataset.obsm.dataF.constBegin();
-        while (l != dataset.obsm.dataF.constEnd()){
+        auto l = dataset.obsm.embedding.constBegin();
+        while (l != dataset.obsm.embedding.constEnd()){
 
-            if(l.key().startsWith("spatial", Qt::CaseInsensitive)){
-
-                ui->spatial_dim0->addItem(l.key());
-                ui->spatial_dim1->addItem(l.key());
+            if(l.key().startsWith("spatial", Qt::CaseInsensitive)and l.value().ndims <3 ){
+                ui->spatial_embed->addItem(l.key());
             }
             l++;
         }
@@ -178,10 +194,8 @@ void MainWindow::setRangeColor(int hue){
 void MainWindow::clearSettings(){
     ui->groups->clear();
     ui->Sample_cb->clear();
-    ui->dim0->clear();
-    ui->dim1->clear();
+    ui->embeddings->clear();
     ui->s_column_cb->clear();
     ui->sp_groups->clear();
-    ui->spatial_dim0->clear();
-    ui->spatial_dim1->clear();
+    ui->spatial_embed->clear();
 }

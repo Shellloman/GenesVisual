@@ -26,18 +26,25 @@ set(PROJECT_SOURCES
         src/mainwindow.cpp
         src/mainwindow.hpp
         src/mainwindow.ui
+
         src/container/h5container.hpp
         src/container/h5container.cpp
         src/container/datasetcontainer.hpp
         src/container/datasetcontainer.cpp
-        src/utils/colorpalette.hpp
-        src/utils/colorpalette.cpp
+        src/container/spatialcontainer.hpp
+        src/container/spatialcontainer.cpp
+        src/container/embeddingcontainer.hpp
+        src/container/embeddingcontainer.cpp
+
         src/graph/graphprojection.hpp
         src/graph/graphprojection.cpp
         src/graph/graphspatial.hpp
         src/graph/graphspatial.cpp
-        src/container/spatialcontainer.hpp
-        src/container/spatialcontainer.cpp
+        src/graph/graphdensity.hpp
+        src/graph/graphdensity.cpp
+
+        src/utils/colorpalette.hpp
+        src/utils/colorpalette.cpp
 
 )
 

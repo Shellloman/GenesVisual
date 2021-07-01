@@ -30,10 +30,10 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="overView">
        <attribute name="title">
@@ -190,8 +190,8 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <item row="15" column="0">
-         <widget class="QPushButton" name="pushButton_2">
+        <item row="10" column="0">
+         <widget class="QPushButton" name="showProjection">
           <property name="maximumSize">
            <size>
             <width>250</width>
@@ -199,12 +199,12 @@
            </size>
           </property>
           <property name="text">
-           <string>Save</string>
+           <string>Show</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
-         <widget class="QComboBox" name="dim1">
+        <item row="8" column="0">
+         <widget class="QComboBox" name="palette_name">
           <property name="maximumSize">
            <size>
             <width>250</width>
@@ -213,24 +213,18 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>groups</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4" rowspan="17">
+        <item row="0" column="4" rowspan="15">
          <widget class="GraphProjection" name="graphicsView"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QComboBox" name="embeddings">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_3">
@@ -241,66 +235,14 @@
            </size>
           </property>
           <property name="text">
-           <string>Dimension 0</string>
+           <string>Embeddings</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QComboBox" name="groups">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QComboBox" name="dim0">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Dimension 1</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="lpoint_size">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>point size</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
+        <item row="5" column="0">
          <widget class="QSlider" name="point_size">
           <property name="maximumSize">
            <size>
@@ -325,8 +267,18 @@
           </property>
          </widget>
         </item>
-        <item row="12" column="0">
-         <widget class="QPushButton" name="showProjection">
+        <item row="1" column="0">
+         <widget class="QComboBox" name="groups">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lpoint_size">
           <property name="maximumSize">
            <size>
             <width>250</width>
@@ -334,11 +286,30 @@
            </size>
           </property>
           <property name="text">
-           <string>Show</string>
+           <string>point size</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>groups</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
          <widget class="QLabel" name="label_rangeColor">
           <property name="maximumSize">
            <size>
@@ -354,7 +325,7 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="7" column="0">
          <widget class="QDial" name="dial">
           <property name="maximumSize">
            <size>
@@ -370,13 +341,182 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
-         <widget class="QComboBox" name="palette_name">
+        <item row="13" column="0">
+         <widget class="QPushButton" name="pushButton_2">
           <property name="maximumSize">
            <size>
             <width>250</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="GraphDensity" name="density">
+       <attribute name="title">
+        <string>Density</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Smooth</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Range</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QPushButton" name="d_show">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Show</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QComboBox" name="d_groups">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Groups</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QSlider" name="d_slider">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="maximum">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>4</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" rowspan="13">
+         <widget class="QChartView" name="d_chart"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QComboBox" name="d_range">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QCheckBox" name="d_draw">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Draw area</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QCheckBox" name="d_norm">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Normalize</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -387,10 +527,33 @@
         <string>Spatial</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="3" rowspan="19">
-         <widget class="QChartView" name="spatial_chart"/>
+        <item row="6" column="1">
+         <widget class="QComboBox" name="spatial_embed">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
         </item>
-        <item row="12" column="1">
+        <item row="7" column="1">
+         <widget class="QLabel" name="l_image_alpha">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Image alpha</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
          <widget class="QSlider" name="alphaplt">
           <property name="maximumSize">
            <size>
@@ -409,65 +572,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="s_column_cb">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="label_8">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>groups</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="1">
-         <widget class="QLabel" name="l_chart_alpha">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Chart alpha</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QLabel" name="label_9">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Spatial dim 0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="1">
+        <item row="8" column="1">
          <widget class="QSlider" name="alphaimg">
           <property name="maximumSize">
            <size>
@@ -486,27 +591,7 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
-         <widget class="QComboBox" name="spatial_dim1">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QComboBox" name="spatial_dim0">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="14" column="1">
+        <item row="12" column="1">
          <widget class="QPushButton" name="load">
           <property name="minimumSize">
            <size>
@@ -522,16 +607,6 @@
           </property>
           <property name="text">
            <string>Show</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="Sample_cb">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
           </property>
          </widget>
         </item>
@@ -551,8 +626,8 @@
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
-         <widget class="QLabel" name="l_image_alpha">
+        <item row="5" column="1">
+         <widget class="QLabel" name="label_9">
           <property name="maximumSize">
            <size>
             <width>250</width>
@@ -560,14 +635,79 @@
            </size>
           </property>
           <property name="text">
-           <string>Image alpha</string>
+           <string>Spatial embeddings</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="17" column="1">
+        <item row="2" column="1">
+         <widget class="QComboBox" name="Sample_cb">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="s_column_cb">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QLabel" name="l_chart_alpha">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Chart alpha</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="label_8">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>groups</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3" rowspan="17">
+         <widget class="QChartView" name="spatial_chart"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="sp_groups">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="15" column="1">
          <widget class="QPushButton" name="spatial_save">
           <property name="maximumSize">
            <size>
@@ -577,32 +717,6 @@
           </property>
           <property name="text">
            <string>Save</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="l_sp_dim1">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Spatial dim 1</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="sp_groups">
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
           </property>
          </widget>
         </item>
@@ -642,10 +756,9 @@
     <slot>createProjection()</slot>
     <slot>setHue(int)</slot>
     <slot>setGroup(QString)</slot>
-    <slot>setDim0(QString)</slot>
-    <slot>setDim1(QString)</slot>
     <slot>setPointSize(int)</slot>
     <slot>setSavePath(QString)</slot>
+    <slot>setEmbedding(QString)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -661,6 +774,12 @@
    <class>QChartView</class>
    <extends>QGraphicsView</extends>
    <header>QtCharts/QChartView</header>
+  </customwidget>
+  <customwidget>
+   <class>GraphDensity</class>
+   <extends>QWidget</extends>
+   <header>src/graph/graphdensity.hpp</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -826,33 +945,17 @@
    </hints>
   </connection>
   <connection>
-   <sender>dim0</sender>
+   <sender>embeddings</sender>
    <signal>currentTextChanged(QString)</signal>
    <receiver>graphicsView</receiver>
-   <slot>setDim0(QString)</slot>
+   <slot>setEmbedding(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>172</y>
+     <x>144</x>
+     <y>190</y>
     </hint>
     <hint type="destinationlabel">
-     <x>742</x>
-     <y>373</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dim1</sender>
-   <signal>currentTextChanged(QString)</signal>
-   <receiver>graphicsView</receiver>
-   <slot>setDim1(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>119</x>
-     <y>244</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>742</x>
+     <x>767</x>
      <y>373</y>
     </hint>
    </hints>

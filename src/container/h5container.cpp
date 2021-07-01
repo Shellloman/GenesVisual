@@ -46,6 +46,15 @@ herr_t H5container::file_info(hid_t loc_id, const char *name, const H5L_info_t *
     return 0;
 }
 
+herr_t H5container::embed_info(hid_t loc_id, const char *name, const H5L_info_t *linfo, void *opdata)
+{
+    auto data = static_cast<EmbeddingContainer*>(opdata);
+    if (name[0] != '_' or name[1] != '_'){
+        data->names.append(name);
+    }
+    return 0;
+}
+
 herr_t H5container::spatial_library(hid_t loc_id, const char *name, const H5L_info_t *linfo, void *opdata)
 {
     auto data = static_cast<SpatialContainer*>(opdata);
@@ -151,6 +160,10 @@ void H5container::load_dataset(DatasetContainer &coldata, H5::H5File &file){
                 hsize_t dims_cat[2];
                 categoryspace.getSimpleExtentDims( dims_cat, NULL);
                 qDebug()<<"dim cat :"<<dims_cat[0];
+                if (dims_cat[0] > 30){
+                    coldata.dataF.remove(tmpName);
+                    continue;
+                }
                 if (type_category == H5T_STRING){
                     qDebug()<<"inter H5T_STRING";
                     char **st = (char **) malloc (dims_cat[0] * sizeof (char *));
@@ -174,13 +187,110 @@ void H5container::load_dataset(DatasetContainer &coldata, H5::H5File &file){
                     metadata.type = Datatype::None;
                 }
                 else{
-                    metadata.minRange = *std::min_element(coldata.dataF[tmpName].begin(), coldata.dataF[tmpName].end());
-                    metadata.maxRange = *std::max_element(coldata.dataF[tmpName].begin(), coldata.dataF[tmpName].end());
+                    metadata.minRange = *std::min_element(
+                                coldata.dataF[tmpName].begin(), coldata.dataF[tmpName].end(),
+                                [] (auto x, auto y){
+                                        return x < y ? true : std::isnan(y);
+                                    });
+                    metadata.maxRange = *std::max_element(
+                                coldata.dataF[tmpName].begin(), coldata.dataF[tmpName].end(),
+                                [] (auto x, auto y){
+                                        return x < y ? true : std::isnan(x);
+                                    });
                     metadata.type = Datatype::Range;
                 }
             }
             coldata.metadata[tmpName] = metadata;
 
+        }
+    }
+}
+
+void H5container::load_embedding(H5::H5File &file){
+    for(const auto &name : qAsConst(obsm.names)){
+
+        auto path = obsm.path+name;
+        qDebug()<< path;
+        H5::DataSet dataset;
+
+        try {
+            dataset = file.openDataSet( path.toStdString() );
+
+        }  catch (H5::Exception& e) {
+            qDebug()<<"Impossible d'ouvrir le dataset : "<<path;
+            continue;
+        }
+
+
+        H5T_class_t type_class = dataset.getTypeClass();
+
+        H5::DataSpace dataspace = dataset.getSpace();
+        hsize_t dims_out[2];
+        int ndims = dataspace.getSimpleExtentDims( dims_out, NULL);
+        if (ndims<2){
+            qDebug()<<"error embedding can't have only one dimension : "<<name;
+            continue;
+        }
+        qDebug()<<" ndism : "<<ndims;
+        qDebug()<< "dims_out[0] : " <<dims_out[0];
+        qDebug()<< "dims_out[1] : " <<dims_out[1];
+
+        if (dims_out[1] == 2 ){
+            Dimensions tmp = {2, name+"_0", name+"_1"};
+            obsm.embedding[name] = tmp;
+        }
+        else{
+            dims_out[1] = 3;
+            Dimensions tmp0 = {2, name+"_0", name+"_1"};
+            Dimensions tmp1 = {2, name+"_0", name+"_2"};
+            Dimensions tmp2 = {2, name+"_1", name+"_2"};
+            Dimensions tmp3 = {3, name+"_0", name+"_1", name+"_2"};
+
+            obsm.embedding[name+"_0-1"] = tmp0;
+            obsm.embedding[name+"_0-2"] = tmp1;
+            obsm.embedding[name+"_1-2"] = tmp2;
+            obsm.embedding[name] = tmp3;
+        }
+
+        for (int i=0; i < dims_out[1]; i++){
+
+            QString tmpName = name+QString("_")+QString::number(i);
+
+            hsize_t      offset[2];   // hyperslab offset in the file
+            hsize_t      count[2];    // size of the hyperslab in the file
+            offset[0] = 0;
+            offset[1] = i;
+            count[0] =  dims_out[0];
+            count[1] = 1;
+
+            hsize_t dimsm[1];              /* memory space dimensions */
+            dimsm[0] = dims_out[0];
+            H5::DataSpace memspace( 1, dimsm );
+            /*
+             * Define memory hyperslab.
+             */
+            hsize_t      offset_out[1];   // hyperslab offset in memory
+            hsize_t      count_out[1];    // size of the hyperslab in memory
+            offset_out[0] = 0;
+            count_out[0] = dims_out[0];
+            memspace.selectHyperslab( H5S_SELECT_SET, count_out, offset_out );
+
+            if (type_class == H5T_INTEGER or type_class == H5T_FLOAT ){
+
+                dataspace.selectHyperslab( H5S_SELECT_SET, count, offset );
+
+                QVector<float> tmp(dims_out[0]);
+                dataset.read(tmp.data(), H5::PredType::NATIVE_FLOAT, memspace, dataspace);
+                obsm.dimensions[tmpName] = tmp;
+
+                obsm.maxRange[tmpName] = *std::max_element(tmp.begin(), tmp.end());
+                obsm.minRange[tmpName] = *std::min_element(tmp.begin(), tmp.end());
+
+            }
+            else{
+                qDebug()<<"Float required for embeddings";
+                continue;
+            }
         }
     }
 }
@@ -275,12 +385,14 @@ void H5container::load_h5(QString filename)
     H5::Group varG(file.openGroup("var"));
 
     H5Literate(obsG.getId(), H5_INDEX_NAME, H5_ITER_NATIVE, NULL, file_info, &obs);
-    H5Literate(obsmG.getId(), H5_INDEX_NAME, H5_ITER_NATIVE, NULL, file_info,  &obsm);
     H5Literate(varG.getId(), H5_INDEX_NAME, H5_ITER_NATIVE, NULL, file_info,  &var);
 
     load_dataset(obs, file);
-    load_dataset(obsm, file);
     load_dataset(var, file);
+
+
+    H5Literate(obsmG.getId(), H5_INDEX_NAME, H5_ITER_NATIVE, NULL, embed_info,  &obsm);
+    load_embedding(file);
 
     if(H5Lexists( file.getId(), "uns/spatial", H5P_DEFAULT ) > 0){
          H5::Group spatialG(file.openGroup("uns/spatial"));

@@ -94,8 +94,9 @@ void GraphSpatial::createFactorGraph(){
         series[i]->setColor(tmp);
     }
 
-    QVector<float> fdim0 = dataset->obsm.dataF[strdim0];
-    QVector<float> fdim1 = dataset->obsm.dataF[strdim1];
+    QVector<float> fdim0 = dataset->obsm.getDimensions(strembed, 0);
+    QVector<float> fdim1 = dataset->obsm.getDimensions(strembed, 1);
+
 
     if(fdim0.length() != fdim1.length()){
         qDebug()<<"dims not have the same length";
@@ -107,11 +108,6 @@ void GraphSpatial::createFactorGraph(){
         qDebug()<< fdim0.length()<<" and "<<dataset->obs.dataF[strgroup].length();
         return;
     }
-
-    float minDim0 = dataset->obsm.metadata[strdim0].minRange;
-    float maxDim0 = dataset->obsm.metadata[strdim0].maxRange;
-    float minDim1 = dataset->obsm.metadata[strdim1].minRange;
-    float maxDim1 = dataset->obsm.metadata[strdim1].maxRange;
 
     if(allData)
         for (int i=0; i<fdim0.length();i++)
@@ -186,8 +182,9 @@ void GraphSpatial::createRangeGraph(){
     }
 
 
-    QVector<float> fdim0 = dataset->obsm.dataF[strdim0];
-    QVector<float> fdim1 = dataset->obsm.dataF[strdim1];
+    QVector<float> fdim0 = dataset->obsm.getDimensions(strembed, 0);
+    QVector<float> fdim1 = dataset->obsm.getDimensions(strembed, 1);
+
 
     if(fdim0.length() != fdim1.length()){
         qDebug()<<"dims not have the same length";
@@ -313,11 +310,8 @@ void GraphSpatial::setColumn(QString column){
     strcolumn = column;
 }
 
-void GraphSpatial::setDim0(QString dim){
-    strdim0 = dim;
-}
-void GraphSpatial::setDim1(QString dim){
-    strdim1 = dim;
+void GraphSpatial::setEmbedding(QString dim){
+    strembed = dim;
 }
 void GraphSpatial::setSample(QString sample){
     pixmapIsSet = false;
@@ -341,4 +335,3 @@ void GraphSpatial::setAlphaImage(int alpha){
 void GraphSpatial::setAlphaPlot(int alpha){
     alphaPlot = alpha;
 }
-
